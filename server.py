@@ -1,13 +1,26 @@
 # uv run server.py
+# npx @modelcontextprotocol/inspector
+"""
+Sheet1
+"الرياض"
+"A:C"
+"""
 from mcp.server.fastmcp import FastMCP
 from typing import Optional, Union
 import pandas as pd
+import os
 
-mcp = FastMCP("DemoServer", host="127.0.0.1", port=8050)
+# PORT = os.environ.get("PORT", 10000)
+
+# Create an MCP server
+mcp = FastMCP("MCP_excel", host="0.0.0.0", port=8000)
+
+
+excel_file_path = r".\excel_file.xlsx"
+
 
 @mcp.tool()
 def fast_search_in_excel(
-    full_path,
     sheet_name: str,
     keyword: Union[str, int],
     usecols: Optional[str] = None,
@@ -47,7 +60,7 @@ def fast_search_in_excel(
     try:
         # Load the Excel sheet
         df = pd.read_excel(
-            full_path,
+            excel_file_path,
             sheet_name=sheet_name,
             usecols=usecols,
             dtype=str,
@@ -72,7 +85,7 @@ def fast_search_in_excel(
         )
         
     except FileNotFoundError:
-        return f"Error: File not found at path '{full_path}'"
+        return f"Error: File not found at path '{excel_file_path}'"
     except ValueError as ve:
         return f"Error: {str(ve)}"
     except Exception as e:
@@ -80,6 +93,4 @@ def fast_search_in_excel(
 
 # Run the server
 if __name__ == "__main__":
-     transport = "stdio"
-     print("Running server with stdio transport")
-     mcp.run(transport="stdio")
+     mcp.run(transport="streamable-http")

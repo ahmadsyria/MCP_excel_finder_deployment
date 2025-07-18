@@ -1,0 +1,12 @@
+[project]
+name = "mcp-remote"
+version = "0.1.0"
+description = "A FastMCP server for searching keywords in Excel files and returning results in JSON format"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.9.3",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.1",
+    "python-dotenv>=1.1.0",
+]
