@@ -9,15 +9,16 @@ from mcp.server.fastmcp import FastMCP
 from typing import Optional, Union
 import pandas as pd
 import os
-
 # PORT = os.environ.get("PORT", 10000)
 
 # Create an MCP server
 mcp = FastMCP("MCP_excel", host="0.0.0.0", port=8000)
 
 
-excel_file_path = r".\excel_file.xlsx"
+excel_file_path = os.path.join(os.path.dirname(__file__), "excel_file.xlsx")
 
+print("File exists?", os.path.exists(excel_file_path))
+print("Absolute path:", os.path.abspath(excel_file_path))
 
 @mcp.tool()
 def fast_search_in_excel(
