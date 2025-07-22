@@ -1,48 +1,32 @@
 # uv run server.py
 # npx @modelcontextprotocol/inspector
-"""
-Sheet1
-"الرياض"
-"A:C"
-"""
+
 from mcp.server.fastmcp import FastMCP
-from typing import Optional, Union
+from typing import Union
 import pandas as pd
 import os
-# PORT = os.environ.get("PORT", 10000)
 
 # Create an MCP server
 mcp = FastMCP("MCP_excel", host="0.0.0.0", port=8000)
-
-
 excel_file_path = os.path.join(os.path.dirname(__file__), "excel_file.xlsx")
-
-print("File exists?", os.path.exists(excel_file_path))
-print("Absolute path:", os.path.abspath(excel_file_path))
 
 @mcp.tool()
 def fast_search_in_excel(
-    sheet_name: str,
     keyword: Union[str, int],
-    usecols: Optional[str] = None,
     case_sensitive: bool = False
 ) -> str:
     """
-    Search for a keyword in an Excel sheet and return matching rows in JSON format.
+    Search for a keyword in 'Sheet1' of an Excel sheet in columns A:K and return matching rows in JSON format.
 
     Args:
-        sheet_name: Name of the sheet to search within.
         keyword: The keyword (string or integer) to search for in the cells.
-        usecols: Optional column range to limit the search (e.g., "A:C").
         case_sensitive: If True, performs case-sensitive search (default: False).
 
     Returns:
         JSON string of matching rows or a message if no matches found.
         Error message if an exception occurs.
-
-    Example:
-        >>> fast_search_in_excel("Sheet1", "example", "A:C")
     """
+
     def _prepare_search_string(value: Union[str, int]) -> str:
         """Convert value to string and handle case sensitivity."""
         search_str = str(value)
@@ -62,10 +46,10 @@ def fast_search_in_excel(
         # Load the Excel sheet
         df = pd.read_excel(
             excel_file_path,
-            sheet_name=sheet_name,
-            usecols=usecols,
+            sheet_name="Sheet1",
+            usecols="A:K",  
             dtype=str,
-            engine='openpyxl'  # Explicit engine for better compatibility
+            engine='openpyxl'
         )
         
         # Prepare search string
@@ -91,7 +75,7 @@ def fast_search_in_excel(
         return f"Error: {str(ve)}"
     except Exception as e:
         return f"Unexpected error: {str(e)}"
-
+    
 # Run the server
 if __name__ == "__main__":
      mcp.run(transport="streamable-http")
